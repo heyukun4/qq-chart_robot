@@ -1,4 +1,5 @@
-# qq-chart_robot
+# 开发版本
+## qq-chart_robot
 QQ聊天软件机器人项目
 ### 环境
 + python版本: 3.9
