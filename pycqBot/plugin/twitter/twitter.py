@@ -40,11 +40,11 @@ class twitter(Plugin):
         bot.timing(self.monitor_send, "twitter_monitor_send", {
             "timeSleep": plugin_config["timeSleep"] if "timeSleep" in plugin_config else 60
         })
-    
+
     def timing_jobs_start(self, job, run_count):
         if job["name"] == "twitter_monitor_send":
             self.monitor()
-    
+
     def timing_jobs_end(self, job, run_count):
         if job["name"] == "twitter_monitor_send":
             self.monitor_send_clear()
@@ -52,7 +52,7 @@ class twitter(Plugin):
     def _json_data_check(self, data):
         if data is None:
             return None
-            
+
         if "status" in data:
             self.twitterApiError(data["status"], data["title"])
             return None
@@ -74,7 +74,7 @@ class twitter(Plugin):
 
         for user_data in user_data_list["data"]:
             self._user_id_list.append(user_data["id"])
-    
+
     def set_tweets_message(self, text):
         return text
 
@@ -95,10 +95,10 @@ class twitter(Plugin):
                 try:
                     if newest_id == self._old_tweets_id_list[index]:
                         continue
-                    
+
                     if newest_id > self._old_tweets_id_list[index]:
                         self._send_msg_list.append(self.set_tweets_message(timelines["data"][0]["text"]))
-                    
+
                     if newest_id < self._old_tweets_id_list[index]:
                         self._send_msg_list.append(self.set_tweets_delete_message(timelines["data"][0]["text"]))
 
@@ -107,16 +107,16 @@ class twitter(Plugin):
 
         except Exception as err:
             self.monitorTweetsError(err)
-        
+
         self._monitor_in = False
 
     def monitor(self):
         self.cqapi.add_task(self._monitor())
         while self._monitor_in:
             time.sleep(1)
-        
+
         self._monitor_in = True
-    
+
     def monitor_send_clear(self):
         self._send_msg_list = []
 
@@ -126,13 +126,13 @@ class twitter(Plugin):
         """
         for message in self._send_msg_list:
             self.cqapi.send_group_msg(group_id, message)
-    
+
     def twitterApiError(self, code, error):
         """
         推特 api 错误
         """
         logging.error("推特 api 错误 code: %s error: %s" % (code, error))
-    
+
     def monitorTweetsError(self, err):
         """
         推文更新错误
